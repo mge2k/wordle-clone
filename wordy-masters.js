@@ -9,6 +9,7 @@ async function init() {
   const res = await fetch("https://words.dev-apis.com/word-of-the-day");
   const data = await res.json();
   const word = data.word.toUpperCase();
+  const wordParts = word.split("");
   setLoading(false);
   console.log(word);
 
@@ -30,6 +31,25 @@ async function init() {
     if (currentGuess.length !== ANSWER_LENGTH) {
       // Do nothing
       return;
+    }
+
+    const guessParts = currentGuess.split("");
+
+    for (let i = 0; i < ANSWER_LENGTH; i++) {
+      // Mark as correct
+      if (guessParts[i] === wordParts[i]) {
+        letters[ANSWER_LENGTH * currentRow + i].classList.add("correct");
+      }
+    }
+
+    for (let i = 0; i < ANSWER_LENGTH; i++) {
+      if (guessParts[i] === wordParts[i]) {
+        // Do nothing, already done
+      } else if (wordParts.includes(guessParts[i])) {
+        letters[ANSWER_LENGTH * currentRow + i].classList.add("close");
+      } else {
+        letters[ANSWER_LENGTH * currentRow + i].classList.add("wrong");
+      }
     }
 
     currentRow++;
