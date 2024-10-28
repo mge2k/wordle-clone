@@ -34,19 +34,23 @@ async function init() {
     }
 
     const guessParts = currentGuess.split("");
+    const map = makeMap(wordParts);
+    console.log(map);
 
     for (let i = 0; i < ANSWER_LENGTH; i++) {
       // Mark as correct
       if (guessParts[i] === wordParts[i]) {
         letters[ANSWER_LENGTH * currentRow + i].classList.add("correct");
+        map[guessParts[i]]--;
       }
     }
 
     for (let i = 0; i < ANSWER_LENGTH; i++) {
       if (guessParts[i] === wordParts[i]) {
         // Do nothing, already done
-      } else if (wordParts.includes(guessParts[i])) {
+      } else if (wordParts.includes(guessParts[i]) && map[guessParts[i]] > 0) {
         letters[ANSWER_LENGTH * currentRow + i].classList.add("close");
+        map[guessParts[i]]--;
       } else {
         letters[ANSWER_LENGTH * currentRow + i].classList.add("wrong");
       }
@@ -83,6 +87,20 @@ function isLetter(letter) {
 
 function setLoading(isLoading) {
   loadingDiv.classList.toggle("hidden", !isLoading);
+}
+
+function makeMap(array) {
+  const obj = {};
+  for (let i = 0; i < array.length; i++) {
+    const letter = array[i];
+    if (obj[letter]) {
+      obj[letter]++;
+    } else {
+      obj[letter] = 1;
+    }
+  }
+
+  return obj;
 }
 
 init();
