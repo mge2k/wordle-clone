@@ -37,6 +37,24 @@ async function init() {
       return;
     }
 
+    isLoading = true;
+    setLoading(true);
+    const res = await fetch("https://words.dev-apis.com/validate-word", {
+      method: "POST",
+      body: JSON.stringify({ word: currentGuess }),
+    });
+
+    const data = await res.json();
+    const validWord = data.validWord;
+
+    isLoading = false;
+    setLoading(false);
+
+    if (!validWord) {
+      markInvalidWord();
+      return;
+    }
+
     const guessParts = currentGuess.split("");
     const map = makeMap(wordParts);
     // console.log(map);
@@ -77,6 +95,17 @@ async function init() {
   function backspace() {
     currentGuess = currentGuess.substring(0, currentGuess.length - 1);
     letters[ANSWER_LENGTH * currentRow + currentGuess.length].innerText = "";
+  }
+
+  function markInvalidWord() {
+    // alert("Not a valid word.");
+    for (let i = 0; i < ANSWER_LENGTH; i++) {
+      letters[ANSWER_LENGTH * currentRow + i].classList.remove("invalid");
+
+      setTimeout(function () {
+        letters[ANSWER_LENGTH * currentRow + i].classList.add("invalid");
+      }, 10);
+    }
   }
 
   document.addEventListener("keydown", function handleKeyPress(event) {
