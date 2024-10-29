@@ -8,7 +8,9 @@ async function init() {
   let currentRow = 0;
   let isLoading = true;
 
-  const res = await fetch("https://words.dev-apis.com/word-of-the-day");
+  const res = await fetch(
+    "https://words.dev-apis.com/word-of-the-day?random=1"
+  );
   const data = await res.json();
   const word = data.word.toUpperCase();
   const wordParts = word.split("");
@@ -83,6 +85,7 @@ async function init() {
     if (currentGuess === word) {
       // Win
       alert("You win!");
+      document.querySelector(".brand").classList.add("winner");
       done = true;
       return;
     } else if (currentRow === ROUNDS) {
